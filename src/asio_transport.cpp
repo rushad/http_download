@@ -22,28 +22,6 @@ namespace HttpDownload
     {
       throw std::exception(e.what());
     }
-/*
-    const char* q = 
-      "GET / HTTP/1.1\r\n"
-      "Host: example.com\r\n"
-      "\r\n";
-    Socket.write_some(boost::asio::buffer(q, strlen(q)));
-
-    for (;;)
-    {
-      char buf[128];
-      boost::system::error_code error;
-
-      size_t len = Socket.read_some(boost::asio::buffer(buf, sizeof(buf)), error);
-      
-      if (error == boost::asio::error::eof)
-        break; // Connection closed cleanly by peer.
-      else if (error)
-        throw boost::system::system_error(error); // Some other error.
-
-      std::cout.write(buf, len);
-    }
-*/
   }
 
   void AsioTransport::Write(const std::string& data)
@@ -57,4 +35,51 @@ namespace HttpDownload
       throw std::exception(e.what());
     }
   }
+
+  std::string AsioTransport::Read()
+  {
+    std::string res;
+    try
+    {
+      while (true)
+      {
+        char buf[4096];
+        boost::system::error_code error;
+
+        size_t len = Socket.read_some(boost::asio::buffer(buf, sizeof(buf)), error);
+        
+        if (error)
+        {
+          if (error == boost::asio::error::eof)
+          {
+            break;
+          }
+          else
+          {
+            throw boost::system::system_error(error);
+          }
+        }
+
+        res += std::string(buf, len);
+      }
+    }
+    catch (boost::system::system_error e)
+    {
+      throw std::exception(e.what());
+    }
+    return res;
+  }
+
+  void AsioTransport::Close()
+  {
+    try
+    {
+      Socket.close();
+    }
+    catch (boost::system::system_error e)
+    {
+      throw std::exception(e.what());
+    }
+  }
+
 }

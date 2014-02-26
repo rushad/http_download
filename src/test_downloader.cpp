@@ -12,6 +12,7 @@ namespace HttpDownload
     public:
       FakeTransport()
         : Connected(false)
+        , Connections(0)
       {
       }
 
@@ -22,6 +23,7 @@ namespace HttpDownload
         if (port != 80)
           throw std::exception("Wrong port");
         Connected = true;
+        ++Connections;
       }
 
       virtual void Write(const std::string& data)
@@ -29,8 +31,19 @@ namespace HttpDownload
         Wrote += data;
       }
 
+      virtual std::string Read()
+      {
+        return "HTTP/1.1 200 OK\r\n";
+      }
+
+      virtual void Close()
+      {
+        Connected = false;
+      }
+
     public:
       bool Connected;
+      unsigned Connections;
       std::string Wrote;
     };
 
@@ -38,35 +51,133 @@ namespace HttpDownload
     {
     };
 
-    TEST_F(TestDownloader, ConnectShouldConnect)
+    TEST_F(TestDownloader, CheckParseUrlFull)
     {
       FakeTransport transport;
       Downloader downloader(transport);
-      downloader.Connect("example.com", 80);
-      EXPECT_TRUE(transport.Connected);
+      std::string proto, host, path;
+      int port;
+      downloader.ParseUrl("http://example.com:123/path", proto, host, port, path);
+      EXPECT_EQ("http", proto);
+      EXPECT_EQ("example.com", host);
+      EXPECT_EQ(123, port);
+      EXPECT_EQ("/path", path);
     }
 
-    TEST_F(TestDownloader, ConnectShouldThrowOnWrongHostName)
+    TEST_F(TestDownloader, CheckParseUrlWithoutProto)
     {
       FakeTransport transport;
       Downloader downloader(transport);
-      EXPECT_THROW(downloader.Connect("wrongexample.com", 80), std::exception);
+      std::string proto, host, path;
+      int port;
+      downloader.ParseUrl("example.com:123/path", proto, host, port, path);
+      EXPECT_EQ("", proto);
+      EXPECT_EQ("example.com", host);
+      EXPECT_EQ(123, port);
+      EXPECT_EQ("/path", path);
     }
 
-    TEST_F(TestDownloader, ConnectShouldThrowOnWrongPort)
+    TEST_F(TestDownloader, CheckParseUrlWithoutHost)
     {
       FakeTransport transport;
       Downloader downloader(transport);
-      EXPECT_THROW(downloader.Connect("example.com", 81), std::exception);
+      std::string proto, host, path;
+      int port;
+      downloader.ParseUrl("http://:123/path", proto, host, port, path);
+      EXPECT_EQ("http", proto);
+      EXPECT_EQ("", host);
+      EXPECT_EQ(123, port);
+      EXPECT_EQ("/path", path);
     }
 
-    TEST_F(TestDownloader, WriteShouldWrite)
+    TEST_F(TestDownloader, CheckParseUrlWithoutHostAndPort)
     {
       FakeTransport transport;
       Downloader downloader(transport);
-      downloader.Connect("example.com", 80);
-      downloader.Write("test");
-      EXPECT_EQ("test", transport.Wrote);
+      std::string proto, host, path;
+      int port;
+      downloader.ParseUrl("http:///path", proto, host, port, path);
+      EXPECT_EQ("http", proto);
+      EXPECT_EQ("", host);
+      EXPECT_EQ(80, port);
+      EXPECT_EQ("/path", path);
+    }
+
+    TEST_F(TestDownloader, CheckParseUrlWithoutPort)
+    {
+      FakeTransport transport;
+      Downloader downloader(transport);
+      std::string proto, host, path;
+      int port;
+      downloader.ParseUrl("http://example.com/path", proto, host, port, path);
+      EXPECT_EQ("http", proto);
+      EXPECT_EQ("example.com", host);
+      EXPECT_EQ(80, port);
+      EXPECT_EQ("/path", path);
+    }
+
+    TEST_F(TestDownloader, CheckParseUrlWithoutPath)
+    {
+      FakeTransport transport;
+      Downloader downloader(transport);
+      std::string proto, host, path;
+      int port;
+      downloader.ParseUrl("http://example.com:123", proto, host, port, path);
+      EXPECT_EQ("http", proto);
+      EXPECT_EQ("example.com", host);
+      EXPECT_EQ(123, port);
+      EXPECT_EQ("/", path);
+    }
+
+    TEST_F(TestDownloader, CheckParseUrlWithoutPortAndPath)
+    {
+      FakeTransport transport;
+      Downloader downloader(transport);
+      std::string proto, host, path;
+      int port;
+      downloader.ParseUrl("http://example.com/", proto, host, port, path);
+      EXPECT_EQ("http", proto);
+      EXPECT_EQ("example.com", host);
+      EXPECT_EQ(80, port);
+      EXPECT_EQ("/", path);
+    }
+
+    TEST_F(TestDownloader, DownloadShouldConnect)
+    {
+      FakeTransport transport;
+      Downloader downloader(transport);
+      downloader.Download("http://example.com");
+      EXPECT_EQ(1, transport.Connections);
+    }
+
+    TEST_F(TestDownloader, DownloadShouldThrowOnWrongHostName)
+    {
+      FakeTransport transport;
+      Downloader downloader(transport);
+      EXPECT_THROW(downloader.Download("http://wrongexample.com"), std::exception);
+    }
+
+    TEST_F(TestDownloader, DownloadShouldThrowOnWrongPort)
+    {
+      FakeTransport transport;
+      Downloader downloader(transport);
+      EXPECT_THROW(downloader.Download("http://example.com:81"), std::exception);
+    }
+
+    TEST_F(TestDownloader, DownloadShouldWrite)
+    {
+      FakeTransport transport;
+      Downloader downloader(transport);
+      downloader.Download("http://example.com");
+      EXPECT_NE("", transport.Wrote);
    }
+
+    TEST_F(TestDownloader, DownloadShouldCloseSocket)
+    {
+      FakeTransport transport;
+      Downloader downloader(transport);
+      downloader.Download("http://example.com");
+      EXPECT_FALSE(transport.Connected);
+    }
   }
 }

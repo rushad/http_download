@@ -15,6 +15,8 @@ namespace HttpDownload
     AsioTransport();
     virtual void Connect(const std::string& hostName, const int port);
     virtual void Write(const std::string& data);
+    virtual std::string Read();
+    virtual void Close();
 
   private:
     boost::asio::io_service IO;
