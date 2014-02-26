@@ -9,6 +9,17 @@ namespace HttpDownload
   {
   }
 
+  AsioTransport::~AsioTransport()
+  {
+    try
+    {
+      Socket.close();
+    }
+    catch (boost::system::system_error e)
+    {
+    }
+  }
+
   void AsioTransport::Connect(const std::string& hostName, const int port)
   {
     try

@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
   {
     HttpDownload::AsioTransport trans;
     HttpDownload::Downloader downloader(trans);
-    std::cout << downloader.Download("http://example.com") << std::endl;
+    std::cout << downloader.Download("http://example.com:80/") << std::endl;
   }
   catch (std::exception e)
   {

@@ -13,6 +13,7 @@ namespace HttpDownload
   {
   public:
     AsioTransport();
+    virtual ~AsioTransport();
     virtual void Connect(const std::string& hostName, const int port);
     virtual void Write(const std::string& data);
     virtual std::string Read();
