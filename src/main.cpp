@@ -33,13 +33,6 @@ int main(int argc, char* argv[])
     return -1;
   }
 
-  std::string proto, host, path;
-  unsigned port;
-
-  HttpDownload::Url url("http://example.com/path");
-  url.Parse(proto, host, port, path);
-  std::cout << proto << "://" << host << ":" << port << path << std::endl;
-
   try
   {
     HttpDownload::AsioTransport trans;

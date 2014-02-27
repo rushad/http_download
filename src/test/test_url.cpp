@@ -1,185 +1,85 @@
-#include "../url_internal.h"
+#include "../url.h"
 
 #include <gtest/gtest.h>
 
-namespace HttpDownload
+namespace Internet
 {
   namespace Test
   {
-    class TestUrlInternal : public ::testing::Test
+    class TestUrl : public ::testing::Test
     {
     };
 
-    TEST_F(TestUrlInternal, CheckGetProto)
+    TEST_F(TestUrl, CheckFullNormalizedURL)
     {
-      Url::Internal url("http://example.com");
-      std::string proto;
-
-      size_t protoEndPos = url.GetProto(proto);
-
-      EXPECT_EQ("http", proto);
-      EXPECT_EQ(7, protoEndPos);
+      Url url("http://example.com:123/path");
+      EXPECT_EQ("http", url.GetProto());
+      EXPECT_EQ("example.com", url.GetHost());
+      EXPECT_EQ(123, url.GetPort());
+      EXPECT_EQ("/path", url.GetPath());
     }
 
-    TEST_F(TestUrlInternal, CheckGetProtoWithoutProto)
+    TEST_F(TestUrl, CheckFullNotNormalizedURL)
     {
-      Url::Internal url("example.com");
-      std::string proto;
-
-      size_t protoEndPos = url.GetProto(proto);
-
-      EXPECT_EQ("", proto);
-      EXPECT_EQ(0, protoEndPos);
+      Url url("HTTP://Example.COM:123/Path");
+      EXPECT_EQ("http", url.GetProto());
+      EXPECT_EQ("example.com", url.GetHost());
+      EXPECT_EQ(123, url.GetPort());
+      EXPECT_EQ("/Path", url.GetPath());
     }
 
-    TEST_F(TestUrlInternal, CheckGetHostPort)
+    TEST_F(TestUrl, CheckWithoutProto)
     {
-      Url::Internal url("http://example.com:123");
-      std::string proto, host_port;
-
-      size_t hostBeginPos = url.GetProto(proto);
-      size_t pathBeginPos = url.GetHostPort(hostBeginPos, host_port);
-
-      EXPECT_EQ("example.com:123", host_port);
-      EXPECT_EQ(22, pathBeginPos);
+      Url url("example.com:123/path");
+      EXPECT_EQ("", url.GetProto());
+      EXPECT_EQ("example.com", url.GetHost());
+      EXPECT_EQ(123, url.GetPort());
+      EXPECT_EQ("/path", url.GetPath());
     }
 
-    TEST_F(TestUrlInternal, CheckSplitHostPort)
+    TEST_F(TestUrl, CheckParseWithoutHost)
     {
-      std::string host;
-      unsigned port;
-
-      Url::Internal::SplitHostPort("example.com:123", host, port);
-
-      EXPECT_EQ("example.com", host);
-      EXPECT_EQ(123, port);
+      Url url("http://:123/path");
+      EXPECT_EQ("http", url.GetProto());
+      EXPECT_EQ("", url.GetHost());
+      EXPECT_EQ(123, url.GetPort());
+      EXPECT_EQ("/path", url.GetPath());
     }
 
-    TEST_F(TestUrlInternal, CheckSplitHostPortWithoutPort)
+    TEST_F(TestUrl, CheckParseWithoutHostAndPort)
     {
-      std::string host;
-      unsigned port;
-
-      Url::Internal::SplitHostPort("example.com", host, port);
-
-      EXPECT_EQ("example.com", host);
-      EXPECT_EQ(80, port);
+      Url url("http:///path");
+      EXPECT_EQ("http", url.GetProto());
+      EXPECT_EQ("", url.GetHost());
+      EXPECT_EQ(80, url.GetPort());
+      EXPECT_EQ("/path", url.GetPath());
     }
 
-    TEST_F(TestUrlInternal, CheckGetPathWithPath)
+    TEST_F(TestUrl, CheckParseUrlWithoutPort)
     {
-      Url::Internal url("http://example.com:123/path");
-      std::string path;
-
-      url.GetPath(22, path);
-
-      EXPECT_EQ("/path", path);
+      Url url("http://example.com/path");
+      EXPECT_EQ("http", url.GetProto());
+      EXPECT_EQ("example.com", url.GetHost());
+      EXPECT_EQ(80, url.GetPort());
+      EXPECT_EQ("/path", url.GetPath());
     }
 
-    TEST_F(TestUrlInternal, CheckGetPathWithoutPath)
+    TEST_F(TestUrl, CheckParseUrlWithoutPath)
     {
-      Url::Internal url("http://example.com");
-      std::string path;
-
-      url.GetPath(18, path);
-
-      EXPECT_EQ("/", path);
+      Url url("http://example.com:123");
+      EXPECT_EQ("http", url.GetProto());
+      EXPECT_EQ("example.com", url.GetHost());
+      EXPECT_EQ(123, url.GetPort());
+      EXPECT_EQ("/", url.GetPath());
     }
 
-    TEST_F(TestUrlInternal, CheckParseFull)
+    TEST_F(TestUrl, CheckParseUrlWithoutPortAndPath)
     {
-      Url::Internal url("http://example.com:123/path");
-      std::string proto, host, path;
-      unsigned port;
-
-      url.Parse(proto, host, port, path);
-
-      EXPECT_EQ("http", proto);
-      EXPECT_EQ("example.com", host);
-      EXPECT_EQ(123, port);
-      EXPECT_EQ("/path", path);
+      Url url("http://example.com/");
+      EXPECT_EQ("http", url.GetProto());
+      EXPECT_EQ("example.com", url.GetHost());
+      EXPECT_EQ(80, url.GetPort());
+      EXPECT_EQ("/", url.GetPath());
     }
-
-    TEST_F(TestUrlInternal, CheckParseWithoutProto)
-    {
-      Url::Internal url("example.com:123/path");
-      std::string proto, host, path;
-      unsigned port;
-
-      url.Parse(proto, host, port, path);
-
-      EXPECT_EQ("", proto);
-      EXPECT_EQ("example.com", host);
-      EXPECT_EQ(123, port);
-      EXPECT_EQ("/path", path);
-    }
-
-    TEST_F(TestUrlInternal, CheckParseWithoutHost)
-    {
-      Url::Internal url("http://:123/path");
-      std::string proto, host, path;
-      unsigned port;
-
-      url.Parse(proto, host, port, path);
-
-      EXPECT_EQ("http", proto);
-      EXPECT_EQ("", host);
-      EXPECT_EQ(123, port);
-      EXPECT_EQ("/path", path);
-    }
-
-    TEST_F(TestUrlInternal, CheckParseWithoutHostAndPort)
-    {
-      Url::Internal url("http:///path");
-      std::string proto, host, path;
-      unsigned port;
-
-      url.Parse(proto, host, port, path);
-
-      EXPECT_EQ("http", proto);
-      EXPECT_EQ("", host);
-      EXPECT_EQ(80, port);
-      EXPECT_EQ("/path", path);
-    }
-/*
-    TEST_F(TestDownloader, CheckParseUrlWithoutPort)
-    {
-      FakeTransport transport;
-      Downloader downloader(transport);
-      std::string proto, host, path;
-      int port;
-      downloader.ParseUrl("http://example.com/path", proto, host, port, path);
-      EXPECT_EQ("http", proto);
-      EXPECT_EQ("example.com", host);
-      EXPECT_EQ(80, port);
-      EXPECT_EQ("/path", path);
-    }
-
-    TEST_F(TestDownloader, CheckParseUrlWithoutPath)
-    {
-      FakeTransport transport;
-      Downloader downloader(transport);
-      std::string proto, host, path;
-      int port;
-      downloader.ParseUrl("http://example.com:123", proto, host, port, path);
-      EXPECT_EQ("http", proto);
-      EXPECT_EQ("example.com", host);
-      EXPECT_EQ(123, port);
-      EXPECT_EQ("/", path);
-    }
-
-    TEST_F(TestDownloader, CheckParseUrlWithoutPortAndPath)
-    {
-      FakeTransport transport;
-      Downloader downloader(transport);
-      std::string proto, host, path;
-      int port;
-      downloader.ParseUrl("http://example.com/", proto, host, port, path);
-      EXPECT_EQ("http", proto);
-      EXPECT_EQ("example.com", host);
-      EXPECT_EQ(80, port);
-      EXPECT_EQ("/", path);
-    }
-*/
   }
 }

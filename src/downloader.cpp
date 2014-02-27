@@ -13,8 +13,11 @@ namespace HttpDownload
     std::string proto, host, path;
     unsigned port;
 
-    Url url(urlString);
-    url.Parse(proto, host, port, path);
+    Internet::Url url(urlString);
+    proto = url.GetProto();
+    host = url.GetHost();
+    port = url.GetPort();
+    path = url.GetPath();
 
     if (proto != "http")
       throw std::exception(("Unknown protocol: " + proto).c_str());

@@ -177,6 +177,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\asio_socket.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\asio_transport.cpp"
 				>
 			</File>
@@ -200,16 +204,16 @@
 				RelativePath=".\src\url.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\src\url_internal.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\src\asio_socket.h"
+				>
+			</File>
 			<File
 				RelativePath=".\src\asio_transport.h"
 				>
@@ -219,15 +223,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\socket.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\transport.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\url.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\url_internal.h"
 				>
 			</File>
 		</Filter>
