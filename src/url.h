@@ -20,6 +20,7 @@ namespace Internet
     static size_t ParseHostPort(const std::string& url, const size_t startPos, std::string& host_port);
     static void SplitHostPort(const std::string& host_port, std::string& host, unsigned& port);
     static void ParsePath(const std::string& url, const size_t startPos, std::string& path);
+    static std::string Unescape(const std::string& url);
 
     std::string Proto;
     std::string Host;

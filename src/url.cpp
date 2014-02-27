@@ -1,5 +1,7 @@
 #include "url.h"
 
+#include <boost/lexical_cast.hpp>
+
 #include <algorithm>
 
 namespace Internet
@@ -14,7 +16,9 @@ namespace Internet
     SplitHostPort(hostPort, Host, Port);
     std::transform(Host.begin(), Host.end(), Host.begin(), ::tolower);
 
-    ParsePath(url, pathPos, Path);
+    std::string path;
+    ParsePath(url, pathPos, path);
+    Path = Unescape(path);
   }
 
   std::string Url::GetProto() const
@@ -81,6 +85,35 @@ namespace Internet
     if (p.empty())
       p = "/";
     path = p;
+  }
+
+  std::string Url::Unescape(const std::string& url)
+  {
+    std::string res;
+    std::string::const_iterator it, end;
+
+    for (it = url.begin(), end = url.end(); it != end; ++it)
+    {
+      if (*it == '%')
+      {
+        std::string hex;
+        hex += *(++it);
+        hex += *(++it);
+
+        int ch;
+        std::stringstream ss;
+        ss << std::hex << hex;
+        ss >> ch;
+
+        res += ch;
+      }
+      else
+      {
+        res += *it;
+      }
+    }
+
+    return res;
   }
 
 }

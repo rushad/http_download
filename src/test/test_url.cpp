@@ -81,5 +81,11 @@ namespace Internet
       EXPECT_EQ(80, url.GetPort());
       EXPECT_EQ("/", url.GetPath());
     }
+
+    TEST_F(TestUrl, CheckUnescaping)
+    {
+      Url url("http://example.com/path%20with%20%22spaces%22%3f");
+      EXPECT_EQ("/path with \"spaces\"?", url.GetPath());
+    }
   }
 }
