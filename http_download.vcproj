@@ -189,7 +189,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\test_downloader.cpp"
+				RelativePath=".\src\test\test_downloader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\test\test_url.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\url.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\url_internal.cpp"
 				>
 			</File>
 		</Filter>
@@ -208,6 +220,14 @@
 			</File>
 			<File
 				RelativePath=".\src\transport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\url.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\url_internal.h"
 				>
 			</File>
 		</Filter>
