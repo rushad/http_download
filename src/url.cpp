@@ -1,5 +1,5 @@
-#include "typecast.h"
 #include "url.h"
+#include "utils.h"
 
 #include <boost/lexical_cast.hpp>
 
@@ -100,7 +100,7 @@ namespace Internet
         std::string hex;
         hex += *(++it);
         hex += *(++it);
-        res += Typecast::HexToUint(hex);
+        res += Utils::HexToUint(hex);
       }
       else
       {

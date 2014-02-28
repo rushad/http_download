@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-namespace Typecast
+namespace Utils
 {
   unsigned HexToUint(const std::string& hex);
   std::string UintToString(const unsigned num);

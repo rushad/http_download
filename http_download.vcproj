@@ -213,11 +213,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\typecast.cpp"
+				RelativePath=".\src\url.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\url.cpp"
+				RelativePath=".\src\utils.cpp"
 				>
 			</File>
 		</Filter>
@@ -263,11 +263,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\typecast.h"
+				RelativePath=".\src\url.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\url.h"
+				RelativePath=".\src\utils.h"
 				>
 			</File>
 		</Filter>

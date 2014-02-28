@@ -1,6 +1,6 @@
-#include "typecast.h"
+#include "utils.h"
 
-namespace Typecast
+namespace Utils
 {
   unsigned HexToUint(const std::string& hex)
   {

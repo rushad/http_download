@@ -1,5 +1,5 @@
 #include "asio_socket.h"
-#include "typecast.h"
+#include "utils.h"
 
 #include <boost/asio/connect.hpp>
 #include <boost/scoped_array.hpp>
@@ -32,7 +32,7 @@ namespace Network
   void AsioSocket::Connect(const std::string& host, const unsigned port)
   {
     boost::asio::ip::tcp::resolver resolver(IO);
-    boost::asio::ip::tcp::resolver::query query(host, Typecast::UintToString(port));
+    boost::asio::ip::tcp::resolver::query query(host, Utils::UintToString(port));
     boost::asio::ip::tcp::resolver::iterator eps = resolver.resolve(query);
     boost::asio::connect(Obj, eps);
   }
