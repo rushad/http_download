@@ -25,7 +25,7 @@ namespace HttpDownload
     try
     {
       boost::asio::ip::tcp::resolver resolver(IO);
-      boost::asio::ip::tcp::resolver::query query(hostName, "http");
+      boost::asio::ip::tcp::resolver::query query(hostName, "80");
       boost::asio::ip::tcp::resolver::iterator eps = resolver.resolve(query);
       boost::asio::connect(Socket, eps);
     }

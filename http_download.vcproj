@@ -177,6 +177,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\asio_factory.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\asio_socket.cpp"
 				>
 			</File>
@@ -193,11 +197,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tcp_connection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\test\test_downloader.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\src\test\test_tcp_connection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\test\test_url.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\typecast.cpp"
 				>
 			</File>
 			<File
@@ -211,6 +227,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\asio_factory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\asio_socket.h"
 				>
 			</File>
@@ -223,11 +243,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\factory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\socket.h"
 				>
 			</File>
 			<File
+				RelativePath=".\src\tcp_connection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\test\test_fake.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\transport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\typecast.h"
 				>
 			</File>
 			<File

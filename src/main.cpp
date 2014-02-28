@@ -1,5 +1,7 @@
+#include "asio_factory.h"
 #include "asio_transport.h"
 #include "downloader.h"
+#include "tcp_connection.h"
 #include "url.h"
 
 #include <gtest/gtest.h>
@@ -33,6 +35,19 @@ int main(int argc, char* argv[])
     return -1;
   }
 
+  Network::AsioFactory factory;
+  Network::TcpConnection tcp(factory.CreateSocket());
+  try
+  {
+    tcp.Connect("example.com", 80);
+    tcp.Write("GET / HTTP/1.1\r\nHost: example.com\r\nConnection: close\r\n\r\n");
+  }
+  catch (Network::TcpConnection::Exception e)
+  {
+    std::cerr << e.What() << std::endl;
+  }
+
+/*
   try
   {
     HttpDownload::AsioTransport trans;
@@ -43,6 +58,6 @@ int main(int argc, char* argv[])
   {
     std::cout << e.what() << std::endl;
   }
-
+*/
   return 0;
 }
